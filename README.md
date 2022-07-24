@@ -1,0 +1,49 @@
+## 👋 Welcome to systemd 🚀  
+
+systemd README  
+  
+  
+## Run container
+
+```shell
+dockermgr update systemd
+```
+
+### via command line
+
+```shell
+docker pull casjaysdevdocker/systemd:latest && \
+docker run -d \
+--restart always \
+--name casjaysdevdocker-systemd \
+--hostname casjaysdev-systemd \
+-e TZ=${TIMEZONE:-America/New_York} \
+-v $HOME/.local/share/docker/storage/systemd/systemd/data:/data \
+-v $HOME/.local/share/docker/storage/systemd/systemd/config:/config \
+-p 80:80 \
+casjaysdevdocker/systemd:latest
+```
+
+### via docker-compose
+
+```yaml
+version: "2"
+services:
+  systemd:
+    image: casjaysdevdocker/systemd
+    container_name: systemd
+    environment:
+      - TZ=America/New_York
+      - HOSTNAME=casjaysdev-systemd
+    volumes:
+      - $HOME/.local/share/docker/storage/systemd/data:/data:z
+      - $HOME/.local/share/docker/storage/systemd/config:/config:z
+    ports:
+      - 80:80
+    restart: always
+```
+
+## Authors  
+
+🤖 Jason Hempstead: [Github](https://github.com/Jason Hempstead) [Docker](https://hub.docker.com/r/Jason Hempstead) 🤖  
+⛵ CasjaysDevdDocker: [Github](https://github.com/casjaysdev) [Docker](https://hub.docker.com/r/casjaysdevdocker) ⛵  
