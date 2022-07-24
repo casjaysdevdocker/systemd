@@ -1,4 +1,4 @@
-FROM casjaysdevdocker/alpine:latest as build
+FROM casjaysdevdocker/debian:latest as build
 
 ARG LICENSE=WTFPL \
   IMAGE_NAME=systemd \
@@ -10,9 +10,26 @@ ENV SHELL=/bin/bash \
   HOSTNAME=${HOSTNAME:-casjaysdev-$IMAGE_NAME} \
   TZ=$TIMEZONE
 
+RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
+
 RUN mkdir -p /bin/ /config/ /data/ && \
   rm -Rf /bin/.gitkeep /config/.gitkeep /data/.gitkeep && \
-  apk update -U --no-cache
+  install_packages \
+  systemd \
+  systemd-sysv \
+  cron && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* \
+  /var/log/alternatives.log \
+  /var/log/apt/history.log \
+  /var/log/apt/term.log \
+  /var/log/dpkg.log  \
+  /etc/machine-id \
+  /var/lib/dbus/machine-id && \
+  systemctl mask --   \
+  dev-hugepages.mount \
+  sys-fs-fuse-connections.mount && \
+
 
 COPY ./bin/. /usr/local/bin/
 COPY ./config/. /config/
@@ -37,17 +54,20 @@ LABEL org.label-schema.name="systemd" \
 ENV SHELL="/bin/bash" \
   TERM="xterm-256color" \
   HOSTNAME="casjaysdev-systemd" \
-  TZ="${TZ:-America/New_York}"
+  TZ="${TZ:-America/New_York}" \
+  container="docker" 
+
+STOPSIGNAL SIGRTMIN+3
 
 WORKDIR /root
 
-VOLUME ["/root","/config","/data"]
+VOLUME [ "/root","/config","/data","/sys/fs/cgroup", "/run", "/run/lock", "/tmp" ]
 
 EXPOSE $PORT
 
 COPY --from=build /. /
 
-HEALTHCHECK CMD ["/usr/local/bin/entrypoint-systemd.sh", "healthcheck"]
-
-ENTRYPOINT ["/usr/local/bin/entrypoint-systemd.sh"]
+HEALTHCHECK CMD [ "/usr/local/bin/entrypoint-systemd.sh", "healthcheck" ]
+ENTRYPOINT [ "/usr/local/bin/entrypoint-systemd.sh" ]
+CMD [ "/sbin/init" ]
 
