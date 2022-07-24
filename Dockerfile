@@ -18,18 +18,19 @@ RUN mkdir -p /bin/ /config/ /data/ && \
   systemd \
   systemd-sysv \
   cron && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* \
+  apt-get clean 
+
+RUN rm -rf /var/lib/apt/lists/* \
   /var/log/alternatives.log \
   /var/log/apt/history.log \
   /var/log/apt/term.log \
   /var/log/dpkg.log  \
   /etc/machine-id \
-  /var/lib/dbus/machine-id && \
-  systemctl mask --   \
+  /var/lib/dbus/machine-id 
+  
+RUN systemctl mask --   \
   dev-hugepages.mount \
-  sys-fs-fuse-connections.mount && \
-
+  sys-fs-fuse-connections.mount
 
 COPY ./bin/. /usr/local/bin/
 COPY ./config/. /config/
