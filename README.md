@@ -14,13 +14,14 @@ dockermgr update systemd
 ```shell
 docker pull casjaysdevdocker/systemd:latest && \
 docker run -d \
+--privileged \
 --restart always \
 --name casjaysdevdocker-systemd \
 --hostname casjaysdev-systemd \
 -e TZ=${TIMEZONE:-America/New_York} \
+-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
 -v $HOME/.local/share/docker/storage/systemd/systemd/data:/data \
 -v $HOME/.local/share/docker/storage/systemd/systemd/config:/config \
--p 80:80 \
 casjaysdevdocker/systemd:latest
 ```
 
@@ -32,14 +33,16 @@ services:
   systemd:
     image: casjaysdevdocker/systemd
     container_name: systemd
+    privileged: true
     environment:
       - TZ=America/New_York
       - HOSTNAME=casjaysdev-systemd
     volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $HOME/.local/share/docker/storage/systemd/data:/data:z
       - $HOME/.local/share/docker/storage/systemd/config:/config:z
     ports:
-      - 80:80
+      - 
     restart: always
 ```
 
