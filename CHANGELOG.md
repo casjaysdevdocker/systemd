@@ -1,3 +1,11 @@
+#### Changelog: 2022-10-03 at 10:32:39  
+
+.dockerignore : 🗃️ Committing everything that changed 🗃️ 🚀  
+  
+#### End of changes for  - 2022-10-03 at 10:32:39  
+  
+----  
+  
 #### Changelog: 2022-07-24 at 18:39:15  
   
 Dockerfile      🚀  
