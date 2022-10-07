@@ -18,7 +18,7 @@ RUN mkdir -p /bin/ /config/ /data/ && \
   systemd \
   systemd-sysv \
   cron && \
-  apt-get clean 
+  apt-get clean
 
 RUN rm -rf /var/lib/apt/lists/* \
   /var/log/alternatives.log \
@@ -26,8 +26,8 @@ RUN rm -rf /var/lib/apt/lists/* \
   /var/log/apt/term.log \
   /var/log/dpkg.log  \
   /etc/machine-id \
-  /var/lib/dbus/machine-id 
-  
+  /var/lib/dbus/machine-id
+
 RUN systemctl mask --   \
   dev-hugepages.mount \
   sys-fs-fuse-connections.mount
@@ -56,7 +56,7 @@ ENV SHELL="/bin/bash" \
   TERM="xterm-256color" \
   HOSTNAME="casjaysdev-systemd" \
   TZ="${TZ:-America/New_York}" \
-  container="docker" 
+  container="docker"
 
 STOPSIGNAL SIGRTMIN+3
 
@@ -68,7 +68,7 @@ EXPOSE $PORT
 
 COPY --from=build /. /
 
-HEALTHCHECK CMD [ "/usr/local/bin/entrypoint-systemd.sh", "healthcheck" ]
+HEALTHCHECK --interval=15s --timeout=3s CMD [ "/usr/local/bin/entrypoint-systemd.sh", "healthcheck" ]
 ENTRYPOINT [ "/usr/local/bin/entrypoint-systemd.sh" ]
 CMD [ "/sbin/init" ]
 
